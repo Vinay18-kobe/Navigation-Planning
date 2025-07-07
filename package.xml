@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>auto_world</name>
+  <version>0.0.1</version>
+  <description>Custom TurtleBot3 navigation and simulation package with Gazebo, A* planning, and kinematic control.</description>
+
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <!-- Build tool -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build & run dependencies -->
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf</depend>
+  <depend>tf2_ros</depend>
+  <depend>gazebo_ros</depend>
+  <depend>xacro</depend>
+  <depend>turtlebot3_description</depend>
+  <depend>turtlebot3_gazebo</depend>
+
+  <!-- Export -->
+  <export>
+    <build_type>catkin</build_type>
+  </export>
+</package>
+
