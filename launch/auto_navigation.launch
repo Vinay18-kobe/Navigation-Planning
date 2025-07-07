@@ -1,0 +1,47 @@
+<launch>
+  <!-- Use simulated time -->
+  <param name="use_sim_time" value="true" />
+
+  <!-- ==== 1. Launch Gazebo with Custom World ==== -->
+  <arg name="world_file" default="$(find auto_world)/worlds/auto.world"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_file)" />
+  </include>
+
+  <!-- ==== 2. Spawn TurtleBot3 Burger Model in Gazebo ==== -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro'" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -model turtlebot3_burger -param robot_description -x 0 -y 0 -z 0.2" />
+
+  <!-- ==== 3. Map Server for Static Map ==== -->
+  <node name="map_server" pkg="map_server" type="map_server"
+        args="$(find auto_world)/maps/my_map.yaml" />
+
+  <!-- ==== 4. Robot State Publisher ==== -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- ==== 5. AMCL Localization ==== -->
+  <node pkg="amcl" type="amcl" name="amcl" output="screen" />
+
+  <!-- ==== 6. A* Global Planner ==== -->
+  <node name="a_star_planner" pkg="auto_world" type="a_star_planner.py" output="screen" />
+
+  <!-- ==== 7. Kinematic Controller ==== -->
+  <node name="kinematic_controller" pkg="auto_world" type="kinematic_controller.py" output="screen"/>
+
+  <!-- ==== 8. Potential Field Obstacle Avoidance ==== -->
+  <node name="potential_field" pkg="auto_world" type="potential_field.py" output="screen" />
+
+  <!-- ==== 9. Velocity Muxer (to merge /cmd_vel from--> 
+  
+  <node name="cmd_vel_mux" pkg="topic_tools" type="mux" args="/cmd_vel /cmd_vel_kinematic /cmd_vel_potential" output="screen" />
+
+
+
+  <!-- ==== 10. Navigation Manager Node to Switch Between Planners ==== -->
+  <node name="navigator" pkg="auto_world" type="navigator.py" output="screen" />
+
+  <!-- ==== 11. RViz Visualization ==== -->
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find auto_world)/rviz/auto_nav_config.rviz" />
+</launch>

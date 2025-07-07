@@ -1,0 +1,27 @@
+<launch>
+  <!-- Use simulated time if Gazebo is used -->
+  <param name="use_sim_time" value="true" />
+
+  <!-- Load map -->
+  <node name="map_server" pkg="map_server" type="map_server"
+        args="$(find auto_world)/maps/my_map.yaml" />
+
+  <!-- Load robot model -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro'" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!-- AMCL localization -->
+  <node pkg="amcl" type="amcl" name="amcl" output="screen" />
+
+  <!-- A* Global Planner (publishes /planned_path) -->
+  <node name="a_star_planner" pkg="auto_world" type="a_star_planner.py" output="screen" />
+  
+  <!-- Kinematic Controller (follows waypoints) -->
+  <node name="kinematic_controller" pkg="auto_world" type="kinematic_controller.py" output="screen"/>
+
+  <!-- RViz for visualization -->
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find auto_world)/rviz/auto_nav_config.rviz" />
+</launch>
+

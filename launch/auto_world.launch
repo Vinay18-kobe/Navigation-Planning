@@ -1,0 +1,13 @@
+<launch>
+  <!-- Use the correct path to your custom world -->
+  <arg name="world_file" default="$(find auto_world)/worlds/auto.world"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_file)" />
+  </include>
+
+  <!-- Spawn the TurtleBot3 Burger -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro'" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -model turtlebot3_burger -param robot_description -x 0 -y 0 -z 0.2" />
+</launch>
